@@ -4,7 +4,6 @@ import connectDB from "./database/db.js"
 import userRoute from "./routes/userRoute.js"
 import cors from "cors"
 
-
 const app = express()
 
 const PORT = process.env.PORT || 3000
@@ -18,10 +17,14 @@ app.use(cors({
 
 app.use('/user', userRoute)
 
-//http://localhost:8000/user/register 
+// Connect to DB at module level so it runs on Vercel serverless too
+connectDB()
 
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`server is listening at port ${PORT}`)
+    })
+}
 
-app.listen(PORT, () => {
-    connectDB()
-    console.log(`server is listening at port ${PORT}`)
-})
+export default app
