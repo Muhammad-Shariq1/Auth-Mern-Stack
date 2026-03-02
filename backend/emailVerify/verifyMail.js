@@ -31,11 +31,14 @@ export const verifyMail = async (token, email) => {
     subject: "Email Verification",
     html: htmlToSend,
   };
-  transporter.sendMail(mailConfigurations, function (error, info) {
-    if (error) {
-      throw new Error(error);
-    }
-    console.log("email sent succesfully ");
-    console.log(info);
-  });
+
+  // Use await instead of callback so errors propagate correctly
+  try {
+    await transporter.sendMail(mailConfigurations);
+    console.log("email sent successfully");
+  } catch (error) {
+    console.error("Email sending failed:", error.message);
+    // Don't throw — let registration succeed even if email fails
+  }
 };
+
